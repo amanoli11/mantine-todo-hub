@@ -33,13 +33,13 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: IconLayoutDashboard,
-    path: '/dashboard',
+    path: '/',
     badge: null,
   },
   {
     label: 'Users',
     icon: IconUsers,
-    path: '/',
+    path: '/users',
     badge: null,
   },
   {
