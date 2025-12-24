@@ -36,6 +36,7 @@ import {
   IconWallet,
   IconPlus,
   IconDownload,
+  IconPrinter,
 } from '@tabler/icons-react';
 import { Transaction } from '@/types/transaction';
 import {
@@ -309,6 +310,161 @@ export default function Transactions() {
     });
   };
 
+  const printSingleTransaction = (transaction: Transaction) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Transaction Receipt - ${transaction.id}</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; }
+            .header { text-align: center; border-bottom: 2px solid #228be6; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: bold; color: #228be6; }
+            .subtitle { color: #868e96; font-size: 12px; }
+            .receipt-title { font-size: 18px; margin-top: 10px; }
+            .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef; }
+            .label { color: #868e96; }
+            .value { font-weight: 500; }
+            .amount { font-size: 24px; font-weight: bold; text-align: center; margin: 30px 0; }
+            .credit { color: #40c057; }
+            .debit { color: #fa5252; }
+            .footer { text-align: center; margin-top: 40px; color: #868e96; font-size: 12px; }
+            .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+            .status-completed { background: #d3f9d8; color: #2f9e44; }
+            .status-pending { background: #fff3bf; color: #f08c00; }
+            .status-failed { background: #ffe3e3; color: #e03131; }
+            @media print { body { padding: 20px; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="logo">FinanceHub</div>
+            <div class="subtitle">Enterprise Suite</div>
+            <div class="receipt-title">Transaction Receipt</div>
+          </div>
+          <div class="amount ${transaction.type}">
+            ${transaction.type === 'credit' ? '+' : '-'}$${transaction.amount.toFixed(2)}
+          </div>
+          <div class="row"><span class="label">Transaction ID</span><span class="value">${transaction.id}</span></div>
+          <div class="row"><span class="label">Date</span><span class="value">${new Date(transaction.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span></div>
+          <div class="row"><span class="label">Description</span><span class="value">${transaction.description}</span></div>
+          <div class="row"><span class="label">Type</span><span class="value">${transaction.type === 'credit' ? 'Credit (Income)' : 'Debit (Expense)'}</span></div>
+          <div class="row"><span class="label">Category</span><span class="value">${transaction.category}</span></div>
+          <div class="row"><span class="label">Account</span><span class="value">${transaction.account}</span></div>
+          <div class="row"><span class="label">Status</span><span class="status status-${transaction.status}">${transaction.status}</span></div>
+          <div class="footer">
+            <p>Generated on ${new Date().toLocaleString()}</p>
+            <p>FinanceHub - Your Trusted Financial Partner</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  };
+
+  const printAllTransactions = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const rows = filteredAndSortedData.map((t) => `
+      <tr>
+        <td>${t.id}</td>
+        <td>${new Date(t.date).toLocaleDateString()}</td>
+        <td>${t.description}</td>
+        <td>${t.category}</td>
+        <td>${t.account}</td>
+        <td class="${t.type}">${t.type === 'credit' ? '+' : '-'}$${t.amount.toFixed(2)}</td>
+        <td><span class="status status-${t.status}">${t.status}</span></td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Transaction Report - FinanceHub</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: bold; color: #228be6; }
+            .subtitle { color: #868e96; font-size: 12px; }
+            .report-title { font-size: 18px; margin-top: 10px; }
+            .summary { display: flex; justify-content: center; gap: 40px; margin: 20px 0 30px; }
+            .summary-item { text-align: center; }
+            .summary-label { font-size: 12px; color: #868e96; }
+            .summary-value { font-size: 20px; font-weight: bold; }
+            .credit { color: #40c057; }
+            .debit { color: #fa5252; }
+            table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            th { background: #f8f9fa; text-align: left; padding: 12px 8px; border-bottom: 2px solid #dee2e6; }
+            td { padding: 10px 8px; border-bottom: 1px solid #e9ecef; }
+            .status { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+            .status-completed { background: #d3f9d8; color: #2f9e44; }
+            .status-pending { background: #fff3bf; color: #f08c00; }
+            .status-failed { background: #ffe3e3; color: #e03131; }
+            .footer { text-align: center; margin-top: 40px; color: #868e96; font-size: 12px; }
+            @media print { body { padding: 20px; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="logo">FinanceHub</div>
+            <div class="subtitle">Enterprise Suite</div>
+            <div class="report-title">Transaction Report</div>
+          </div>
+          <div class="summary">
+            <div class="summary-item">
+              <div class="summary-label">Total Credits</div>
+              <div class="summary-value credit">+$${totalCredits.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Total Debits</div>
+              <div class="summary-value debit">-$${totalDebits.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Net Balance</div>
+              <div class="summary-value" style="color: ${totalCredits - totalDebits >= 0 ? '#40c057' : '#fa5252'}">$${(totalCredits - totalDebits).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+          <div class="footer">
+            <p>${filteredAndSortedData.length} transactions | Generated on ${new Date().toLocaleString()}</p>
+            <p>FinanceHub - Your Trusted Financial Partner</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  };
+
   const totalCredits = filteredAndSortedData
     .filter((t) => t.type === 'credit')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -334,6 +490,9 @@ export default function Transactions() {
           <Badge size="lg" variant="light" color="red" leftSection={<IconArrowUpRight size={14} />}>
             -${totalDebits.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </Badge>
+          <Button variant="light" leftSection={<IconPrinter size={16} />} onClick={printAllTransactions}>
+            Print
+          </Button>
           <Button variant="light" leftSection={<IconDownload size={16} />} onClick={downloadAllTransactions}>
             Export CSV
           </Button>
@@ -564,6 +723,12 @@ export default function Transactions() {
                               onClick={() => downloadSingleTransaction(transaction)}
                             >
                               Download
+                            </Menu.Item>
+                            <Menu.Item
+                              leftSection={<IconPrinter size={14} />}
+                              onClick={() => printSingleTransaction(transaction)}
+                            >
+                              Print
                             </Menu.Item>
                             <Menu.Divider />
                             <Menu.Item
