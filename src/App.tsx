@@ -3,6 +3,7 @@ import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
+import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
 
@@ -79,7 +80,8 @@ const App = () => (
       <BrowserRouter>
         <AppLayout>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/users" element={<Index />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
