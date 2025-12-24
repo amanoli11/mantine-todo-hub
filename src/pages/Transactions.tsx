@@ -35,6 +35,7 @@ import {
   IconBuildingBank,
   IconWallet,
   IconPlus,
+  IconDownload,
 } from '@tabler/icons-react';
 import { Transaction } from '@/types/transaction';
 import {
@@ -249,6 +250,65 @@ export default function Transactions() {
     );
   };
 
+  const downloadSingleTransaction = (transaction: Transaction) => {
+    const csvContent = [
+      ['ID', 'Date', 'Description', 'Type', 'Amount', 'Category', 'Account', 'Status'].join(','),
+      [
+        transaction.id,
+        transaction.date,
+        `"${transaction.description}"`,
+        transaction.type,
+        transaction.amount.toFixed(2),
+        transaction.category,
+        transaction.account,
+        transaction.status,
+      ].join(','),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `transaction_${transaction.id}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    notifications.show({
+      title: 'Downloaded',
+      message: `Transaction ${transaction.id} exported successfully`,
+      color: 'blue',
+    });
+  };
+
+  const downloadAllTransactions = () => {
+    const csvHeader = ['ID', 'Date', 'Description', 'Type', 'Amount', 'Category', 'Account', 'Status'].join(',');
+    const csvRows = filteredAndSortedData.map((t) =>
+      [
+        t.id,
+        t.date,
+        `"${t.description}"`,
+        t.type,
+        t.amount.toFixed(2),
+        t.category,
+        t.account,
+        t.status,
+      ].join(',')
+    );
+    const csvContent = [csvHeader, ...csvRows].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    notifications.show({
+      title: 'Downloaded',
+      message: `${filteredAndSortedData.length} transactions exported successfully`,
+      color: 'blue',
+    });
+  };
+
   const totalCredits = filteredAndSortedData
     .filter((t) => t.type === 'credit')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -274,6 +334,9 @@ export default function Transactions() {
           <Badge size="lg" variant="light" color="red" leftSection={<IconArrowUpRight size={14} />}>
             -${totalDebits.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </Badge>
+          <Button variant="light" leftSection={<IconDownload size={16} />} onClick={downloadAllTransactions}>
+            Export CSV
+          </Button>
           <Button leftSection={<IconPlus size={16} />} onClick={handleCreate}>
             Add Transaction
           </Button>
@@ -495,6 +558,12 @@ export default function Transactions() {
                               onClick={() => handleEdit(transaction)}
                             >
                               Edit
+                            </Menu.Item>
+                            <Menu.Item
+                              leftSection={<IconDownload size={14} />}
+                              onClick={() => downloadSingleTransaction(transaction)}
+                            >
+                              Download
                             </Menu.Item>
                             <Menu.Divider />
                             <Menu.Item
