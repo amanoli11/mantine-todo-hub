@@ -163,7 +163,7 @@ const Index = () => {
   ];
 
   return (
-    <Box p="xl">
+    <Box>
       {/* Page Header */}
       <Box mb="xl">
         <Title order={2} fw={700} mb={4}>
