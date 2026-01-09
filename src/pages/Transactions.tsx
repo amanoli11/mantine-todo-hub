@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from "react";
 import {
   Paper,
   Title,
@@ -17,8 +17,8 @@ import {
   Button,
   Modal,
   Skeleton,
-} from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+} from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import {
   IconSearch,
   IconFilter,
@@ -37,27 +37,27 @@ import {
   IconPlus,
   IconDownload,
   IconPrinter,
-} from '@tabler/icons-react';
-import { Transaction } from '@/types/transaction';
+} from "@tabler/icons-react";
+import { Transaction } from "@/types/transaction";
 import {
   useTransactions,
   useCreateTransaction,
   useUpdateTransaction,
   useDeleteTransaction,
-} from '@/hooks/useTransactions';
-import { TransactionForm } from '@/components/TransactionForm';
-import { TransactionDeleteModal } from '@/components/TransactionDeleteModal';
-import { CreateTransactionInput } from '@/types/transaction';
+} from "@/hooks/useTransactions";
+import { TransactionForm } from "@/components/TransactionForm";
+import { TransactionDeleteModal } from "@/components/TransactionDeleteModal";
+import { CreateTransactionInput } from "@/types/transaction";
 
-type SortField = 'date' | 'description' | 'amount' | 'status';
-type SortDirection = 'asc' | 'desc';
+type SortField = "date" | "description" | "amount" | "status";
+type SortDirection = "asc" | "desc";
 
 const getAccountIcon = (account: string) => {
   switch (account) {
-    case 'Credit Card':
+    case "Credit Card":
       return IconCreditCard;
-    case 'Checking':
-    case 'Savings':
+    case "Checking":
+    case "Savings":
       return IconBuildingBank;
     default:
       return IconWallet;
@@ -66,14 +66,14 @@ const getAccountIcon = (account: string) => {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'completed':
-      return 'green';
-    case 'pending':
-      return 'yellow';
-    case 'failed':
-      return 'red';
+    case "completed":
+      return "green";
+    case "pending":
+      return "yellow";
+    case "failed":
+      return "red";
     default:
-      return 'gray';
+      return "gray";
   }
 };
 
@@ -83,19 +83,20 @@ export default function Transactions() {
   const updateMutation = useUpdateTransaction();
   const deleteMutation = useDeleteTransaction();
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const [sortField, setSortField] = useState<SortField>('date');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
 
   // Modal states
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const categories = useMemo(() => {
@@ -131,24 +132,32 @@ export default function Transactions() {
     data.sort((a, b) => {
       let comparison = 0;
       switch (sortField) {
-        case 'date':
+        case "date":
           comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
           break;
-        case 'description':
+        case "description":
           comparison = a.description.localeCompare(b.description);
           break;
-        case 'amount':
+        case "amount":
           comparison = a.amount - b.amount;
           break;
-        case 'status':
+        case "status":
           comparison = a.status.localeCompare(b.status);
           break;
       }
-      return sortDirection === 'asc' ? comparison : -comparison;
+      return sortDirection === "asc" ? comparison : -comparison;
     });
 
     return data;
-  }, [transactions, search, typeFilter, statusFilter, categoryFilter, sortField, sortDirection]);
+  }, [
+    transactions,
+    search,
+    typeFilter,
+    statusFilter,
+    categoryFilter,
+    sortField,
+    sortDirection,
+  ]);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
@@ -159,15 +168,15 @@ export default function Transactions() {
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('desc');
+      setSortDirection("desc");
     }
   };
 
   const clearFilters = () => {
-    setSearch('');
+    setSearch("");
     setTypeFilter(null);
     setStatusFilter(null);
     setCategoryFilter(null);
@@ -199,25 +208,25 @@ export default function Transactions() {
       if (selectedTransaction) {
         await updateMutation.mutateAsync({ id: selectedTransaction.id, data });
         notifications.show({
-          title: 'Success',
-          message: 'Transaction updated successfully',
-          color: 'green',
+          title: "Success",
+          message: "Transaction updated successfully",
+          color: "green",
         });
       } else {
         await createMutation.mutateAsync(data);
         notifications.show({
-          title: 'Success',
-          message: 'Transaction created successfully',
-          color: 'green',
+          title: "Success",
+          message: "Transaction created successfully",
+          color: "green",
         });
       }
       setFormModalOpen(false);
       setSelectedTransaction(null);
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to save transaction',
-        color: 'red',
+        title: "Error",
+        message: "Failed to save transaction",
+        color: "red",
       });
     }
   };
@@ -227,24 +236,24 @@ export default function Transactions() {
     try {
       await deleteMutation.mutateAsync(selectedTransaction.id);
       notifications.show({
-        title: 'Success',
-        message: 'Transaction deleted successfully',
-        color: 'green',
+        title: "Success",
+        message: "Transaction deleted successfully",
+        color: "green",
       });
       setDeleteModalOpen(false);
       setSelectedTransaction(null);
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to delete transaction',
-        color: 'red',
+        title: "Error",
+        message: "Failed to delete transaction",
+        color: "red",
       });
     }
   };
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
-    return sortDirection === 'asc' ? (
+    return sortDirection === "asc" ? (
       <IconArrowUp size={14} style={{ marginLeft: 4 }} />
     ) : (
       <IconArrowDown size={14} style={{ marginLeft: 4 }} />
@@ -253,7 +262,16 @@ export default function Transactions() {
 
   const downloadSingleTransaction = (transaction: Transaction) => {
     const csvContent = [
-      ['ID', 'Date', 'Description', 'Type', 'Amount', 'Category', 'Account', 'Status'].join(','),
+      [
+        "ID",
+        "Date",
+        "Description",
+        "Type",
+        "Amount",
+        "Category",
+        "Account",
+        "Status",
+      ].join(","),
       [
         transaction.id,
         transaction.date,
@@ -263,25 +281,34 @@ export default function Transactions() {
         transaction.category,
         transaction.account,
         transaction.status,
-      ].join(','),
-    ].join('\n');
+      ].join(","),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `transaction_${transaction.id}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
 
     notifications.show({
-      title: 'Downloaded',
+      title: "Downloaded",
       message: `Transaction ${transaction.id} exported successfully`,
-      color: 'blue',
+      color: "blue",
     });
   };
 
   const downloadAllTransactions = () => {
-    const csvHeader = ['ID', 'Date', 'Description', 'Type', 'Amount', 'Category', 'Account', 'Status'].join(',');
+    const csvHeader = [
+      "ID",
+      "Date",
+      "Description",
+      "Type",
+      "Amount",
+      "Category",
+      "Account",
+      "Status",
+    ].join(",");
     const csvRows = filteredAndSortedData.map((t) =>
       [
         t.id,
@@ -292,26 +319,28 @@ export default function Transactions() {
         t.category,
         t.account,
         t.status,
-      ].join(',')
+      ].join(",")
     );
-    const csvContent = [csvHeader, ...csvRows].join('\n');
+    const csvContent = [csvHeader, ...csvRows].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `transactions_${
+      new Date().toISOString().split("T")[0]
+    }.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
 
     notifications.show({
-      title: 'Downloaded',
+      title: "Downloaded",
       message: `${filteredAndSortedData.length} transactions exported successfully`,
-      color: 'blue',
+      color: "blue",
     });
   };
 
   const printSingleTransaction = (transaction: Transaction) => {
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
     const html = `
@@ -346,15 +375,38 @@ export default function Transactions() {
             <div class="receipt-title">Transaction Receipt</div>
           </div>
           <div class="amount ${transaction.type}">
-            ${transaction.type === 'credit' ? '+' : '-'}$${transaction.amount.toFixed(2)}
+            ${
+              transaction.type === "credit" ? "+" : "-"
+            }$${transaction.amount.toFixed(2)}
           </div>
-          <div class="row"><span class="label">Transaction ID</span><span class="value">${transaction.id}</span></div>
-          <div class="row"><span class="label">Date</span><span class="value">${new Date(transaction.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span></div>
-          <div class="row"><span class="label">Description</span><span class="value">${transaction.description}</span></div>
-          <div class="row"><span class="label">Type</span><span class="value">${transaction.type === 'credit' ? 'Credit (Income)' : 'Debit (Expense)'}</span></div>
-          <div class="row"><span class="label">Category</span><span class="value">${transaction.category}</span></div>
-          <div class="row"><span class="label">Account</span><span class="value">${transaction.account}</span></div>
-          <div class="row"><span class="label">Status</span><span class="status status-${transaction.status}">${transaction.status}</span></div>
+          <div class="row"><span class="label">Transaction ID</span><span class="value">${
+            transaction.id
+          }</span></div>
+          <div class="row"><span class="label">Date</span><span class="value">${new Date(
+            transaction.date
+          ).toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}</span></div>
+          <div class="row"><span class="label">Description</span><span class="value">${
+            transaction.description
+          }</span></div>
+          <div class="row"><span class="label">Type</span><span class="value">${
+            transaction.type === "credit"
+              ? "Credit (Income)"
+              : "Debit (Expense)"
+          }</span></div>
+          <div class="row"><span class="label">Category</span><span class="value">${
+            transaction.category
+          }</span></div>
+          <div class="row"><span class="label">Account</span><span class="value">${
+            transaction.account
+          }</span></div>
+          <div class="row"><span class="label">Status</span><span class="status status-${
+            transaction.status
+          }">${transaction.status}</span></div>
           <div class="footer">
             <p>Generated on ${new Date().toLocaleString()}</p>
             <p>FinanceHub - Your Trusted Financial Partner</p>
@@ -371,20 +423,26 @@ export default function Transactions() {
   };
 
   const printAllTransactions = () => {
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
-    const rows = filteredAndSortedData.map((t) => `
+    const rows = filteredAndSortedData
+      .map(
+        (t) => `
       <tr>
         <td>${t.id}</td>
         <td>${new Date(t.date).toLocaleDateString()}</td>
         <td>${t.description}</td>
         <td>${t.category}</td>
         <td>${t.account}</td>
-        <td class="${t.type}">${t.type === 'credit' ? '+' : '-'}$${t.amount.toFixed(2)}</td>
+        <td class="${t.type}">${
+          t.type === "credit" ? "+" : "-"
+        }$${t.amount.toFixed(2)}</td>
         <td><span class="status status-${t.status}">${t.status}</span></td>
       </tr>
-    `).join('');
+    `
+      )
+      .join("");
 
     const html = `
       <!DOCTYPE html>
@@ -423,15 +481,25 @@ export default function Transactions() {
           <div class="summary">
             <div class="summary-item">
               <div class="summary-label">Total Credits</div>
-              <div class="summary-value credit">+$${totalCredits.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+              <div class="summary-value credit">+$${totalCredits.toLocaleString(
+                "en-US",
+                { minimumFractionDigits: 2 }
+              )}</div>
             </div>
             <div class="summary-item">
               <div class="summary-label">Total Debits</div>
-              <div class="summary-value debit">-$${totalDebits.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+              <div class="summary-value debit">-$${totalDebits.toLocaleString(
+                "en-US",
+                { minimumFractionDigits: 2 }
+              )}</div>
             </div>
             <div class="summary-item">
               <div class="summary-label">Net Balance</div>
-              <div class="summary-value" style="color: ${totalCredits - totalDebits >= 0 ? '#40c057' : '#fa5252'}">$${(totalCredits - totalDebits).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+              <div class="summary-value" style="color: ${
+                totalCredits - totalDebits >= 0 ? "#40c057" : "#fa5252"
+              }">$${(totalCredits - totalDebits).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+    })}</div>
             </div>
           </div>
           <table>
@@ -451,7 +519,9 @@ export default function Transactions() {
             </tbody>
           </table>
           <div class="footer">
-            <p>${filteredAndSortedData.length} transactions | Generated on ${new Date().toLocaleString()}</p>
+            <p>${
+              filteredAndSortedData.length
+            } transactions | Generated on ${new Date().toLocaleString()}</p>
             <p>FinanceHub - Your Trusted Financial Partner</p>
           </div>
         </body>
@@ -466,10 +536,10 @@ export default function Transactions() {
   };
 
   const totalCredits = filteredAndSortedData
-    .filter((t) => t.type === 'credit')
+    .filter((t) => t.type === "credit")
     .reduce((sum, t) => sum + t.amount, 0);
   const totalDebits = filteredAndSortedData
-    .filter((t) => t.type === 'debit')
+    .filter((t) => t.type === "debit")
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
@@ -484,16 +554,36 @@ export default function Transactions() {
           </Text>
         </Box>
         <Group>
-          <Badge size="lg" variant="light" color="green" leftSection={<IconArrowDownLeft size={14} />}>
-            +${totalCredits.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <Badge
+            size="lg"
+            variant="light"
+            color="green"
+            leftSection={<IconArrowDownLeft size={14} />}
+          >
+            +$
+            {totalCredits.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           </Badge>
-          <Badge size="lg" variant="light" color="red" leftSection={<IconArrowUpRight size={14} />}>
-            -${totalDebits.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <Badge
+            size="lg"
+            variant="light"
+            color="red"
+            leftSection={<IconArrowUpRight size={14} />}
+          >
+            -$
+            {totalDebits.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           </Badge>
-          <Button variant="light" leftSection={<IconPrinter size={16} />} onClick={printAllTransactions}>
+          <Button
+            variant="light"
+            leftSection={<IconPrinter size={16} />}
+            onClick={printAllTransactions}
+          >
             Print
           </Button>
-          <Button variant="light" leftSection={<IconDownload size={16} />} onClick={downloadAllTransactions}>
+          <Button
+            variant="light"
+            leftSection={<IconDownload size={16} />}
+            onClick={downloadAllTransactions}
+          >
             Export CSV
           </Button>
           <Button leftSection={<IconPlus size={16} />} onClick={handleCreate}>
@@ -503,7 +593,7 @@ export default function Transactions() {
       </Group>
 
       {/* Filters */}
-      <Paper p="md" radius="md" withBorder mb="lg">
+      <Paper radius="md" mb="lg" shadow="xs">
         <Group gap="md" wrap="wrap">
           <TextInput
             placeholder="Search transactions..."
@@ -519,8 +609,8 @@ export default function Transactions() {
             placeholder="Type"
             leftSection={<IconFilter size={16} />}
             data={[
-              { value: 'credit', label: 'Credit' },
-              { value: 'debit', label: 'Debit' },
+              { value: "credit", label: "Credit" },
+              { value: "debit", label: "Debit" },
             ]}
             value={typeFilter}
             onChange={(value) => {
@@ -533,9 +623,9 @@ export default function Transactions() {
           <Select
             placeholder="Status"
             data={[
-              { value: 'completed', label: 'Completed' },
-              { value: 'pending', label: 'Pending' },
-              { value: 'failed', label: 'Failed' },
+              { value: "completed", label: "Completed" },
+              { value: "pending", label: "Pending" },
+              { value: "failed", label: "Failed" },
             ]}
             value={statusFilter}
             onChange={(value) => {
@@ -556,7 +646,12 @@ export default function Transactions() {
             clearable
             w={150}
           />
-          <ActionIcon variant="light" color="gray" size="lg" onClick={clearFilters}>
+          <ActionIcon
+            variant="light"
+            color="gray"
+            size="lg"
+            onClick={clearFilters}
+          >
             <IconRefresh size={18} />
           </ActionIcon>
         </Group>
@@ -565,13 +660,13 @@ export default function Transactions() {
       {/* Table */}
       <Paper radius="md" withBorder>
         <Table.ScrollContainer minWidth={800}>
-          <Table striped highlightOnHover>
+          <Table striped highlightOnHover withRowBorders={false}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Transaction ID</Table.Th>
                 <Table.Th
-                  onClick={() => handleSort('date')}
-                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort("date")}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <Group gap={4}>
                     Date
@@ -579,8 +674,8 @@ export default function Transactions() {
                   </Group>
                 </Table.Th>
                 <Table.Th
-                  onClick={() => handleSort('description')}
-                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort("description")}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <Group gap={4}>
                     Description
@@ -590,8 +685,8 @@ export default function Transactions() {
                 <Table.Th>Category</Table.Th>
                 <Table.Th>Account</Table.Th>
                 <Table.Th
-                  onClick={() => handleSort('amount')}
-                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort("amount")}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <Group gap={4}>
                     Amount
@@ -599,8 +694,8 @@ export default function Transactions() {
                   </Group>
                 </Table.Th>
                 <Table.Th
-                  onClick={() => handleSort('status')}
-                  style={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort("status")}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <Group gap={4}>
                     Status
@@ -641,11 +736,14 @@ export default function Transactions() {
                       </Table.Td>
                       <Table.Td>
                         <Text size="sm">
-                          {new Date(transaction.date).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
+                          {new Date(transaction.date).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
                         </Text>
                       </Table.Td>
                       <Table.Td>
@@ -654,9 +752,11 @@ export default function Transactions() {
                             size={32}
                             radius="md"
                             variant="light"
-                            color={transaction.type === 'credit' ? 'green' : 'red'}
+                            color={
+                              transaction.type === "credit" ? "green" : "red"
+                            }
                           >
-                            {transaction.type === 'credit' ? (
+                            {transaction.type === "credit" ? (
                               <IconArrowDownLeft size={16} />
                             ) : (
                               <IconArrowUpRight size={16} />
@@ -681,9 +781,13 @@ export default function Transactions() {
                         </Group>
                       </Table.Td>
                       <Table.Td>
-                        <Text size="sm" fw={600} c={transaction.type === 'credit' ? 'green' : 'red'}>
-                          {transaction.type === 'credit' ? '+' : '-'}$
-                          {transaction.amount.toLocaleString('en-US', {
+                        <Text
+                          size="sm"
+                          fw={600}
+                          c={transaction.type === "credit" ? "green" : "red"}
+                        >
+                          {transaction.type === "credit" ? "+" : "-"}$
+                          {transaction.amount.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
                           })}
                         </Text>
@@ -720,13 +824,17 @@ export default function Transactions() {
                             </Menu.Item>
                             <Menu.Item
                               leftSection={<IconDownload size={14} />}
-                              onClick={() => downloadSingleTransaction(transaction)}
+                              onClick={() =>
+                                downloadSingleTransaction(transaction)
+                              }
                             >
                               Download
                             </Menu.Item>
                             <Menu.Item
                               leftSection={<IconPrinter size={14} />}
-                              onClick={() => printSingleTransaction(transaction)}
+                              onClick={() =>
+                                printSingleTransaction(transaction)
+                              }
                             >
                               Print
                             </Menu.Item>
@@ -753,14 +861,22 @@ export default function Transactions() {
         <Group
           justify="space-between"
           p="md"
-          style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}
+          style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
         >
           <Text size="sm" c="dimmed">
-            Showing {filteredAndSortedData.length > 0 ? (page - 1) * itemsPerPage + 1 : 0} to{' '}
-            {Math.min(page * itemsPerPage, filteredAndSortedData.length)} of{' '}
+            Showing{" "}
+            {filteredAndSortedData.length > 0
+              ? (page - 1) * itemsPerPage + 1
+              : 0}{" "}
+            to {Math.min(page * itemsPerPage, filteredAndSortedData.length)} of{" "}
             {filteredAndSortedData.length} transactions
           </Text>
-          <Pagination total={totalPages} value={page} onChange={setPage} size="sm" />
+          <Pagination
+            total={totalPages}
+            value={page}
+            onChange={setPage}
+            size="sm"
+          />
         </Group>
       </Paper>
 
@@ -771,7 +887,7 @@ export default function Transactions() {
           setFormModalOpen(false);
           setSelectedTransaction(null);
         }}
-        title={selectedTransaction ? 'Edit Transaction' : 'Add Transaction'}
+        title={selectedTransaction ? "Edit Transaction" : "Add Transaction"}
         centered
         radius="md"
         size="lg"
@@ -828,7 +944,9 @@ export default function Transactions() {
               <Text size="sm" c="dimmed">
                 Type
               </Text>
-              <Badge color={selectedTransaction.type === 'credit' ? 'green' : 'red'}>
+              <Badge
+                color={selectedTransaction.type === "credit" ? "green" : "red"}
+              >
                 {selectedTransaction.type}
               </Badge>
             </Group>
@@ -836,8 +954,12 @@ export default function Transactions() {
               <Text size="sm" c="dimmed">
                 Amount
               </Text>
-              <Text size="sm" fw={700} c={selectedTransaction.type === 'credit' ? 'green' : 'red'}>
-                {selectedTransaction.type === 'credit' ? '+' : '-'}$
+              <Text
+                size="sm"
+                fw={700}
+                c={selectedTransaction.type === "credit" ? "green" : "red"}
+              >
+                {selectedTransaction.type === "credit" ? "+" : "-"}$
                 {selectedTransaction.amount.toFixed(2)}
               </Text>
             </Group>

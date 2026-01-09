@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Box } from "@mantine/core";
-import { Sidebar } from "./Sidebar";
+import { AppShell, Box, Burger, Group, rem, ScrollArea } from "@mantine/core";
+import { NavbarSearch } from "./Sidebar";
+import { useDisclosure } from "@mantine/hooks";
 import { Topbar } from "./Topbar";
 
 interface AppLayoutProps {
@@ -8,35 +8,29 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [opened, { toggle }] = useDisclosure();
 
   return (
-    <Box style={{ display: "flex", minHeight: "100vh", width: "100%" }}>
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed(!collapsed)}
-      />
-      <Box
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          background: "hsl(220 14% 96%)",
-          minWidth: 0,
-        }}
-      >
+    <AppShell
+      layout="alt"
+      withBorder={false}
+      header={{ height: 60, offset: false }}
+      navbar={{
+        width: 300,
+        breakpoint: "sm",
+        collapsed: { mobile: !opened, desktop: false },
+      }}
+      padding="md"
+    >
+      <AppShell.Header>
         <Topbar />
-        <Box
-          p="lg"
-          component="main"
-          style={{
-            flex: 1,
-            overflow: "auto",
-          }}
-        >
-          {children}
-        </Box>
-      </Box>
-    </Box>
+      </AppShell.Header>
+
+      <NavbarSearch />
+
+      <AppShell.Main pt={`calc(${rem(60)} + var(--mantine-spacing-md))`}>
+        {children}
+      </AppShell.Main>
+    </AppShell>
   );
 }

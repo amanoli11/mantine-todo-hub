@@ -181,8 +181,8 @@ const Index = () => {
             radius="md"
             withBorder
             style={{
-              borderColor: 'hsl(220 13% 91%)',
-              background: 'white',
+              // borderColor: 'hsl(220 13% 91%)',
+              // background: 'white',
             }}
           >
             <Group justify="space-between" align="flex-start">
@@ -208,7 +208,7 @@ const Index = () => {
       </SimpleGrid>
 
       {/* Search and Actions */}
-      <Paper p="md" radius="md" withBorder mb="lg" bg="white">
+      <Paper mb="lg" shadow='xs'>
         <Group justify="space-between" wrap="wrap" gap="md">
           <TextInput
             placeholder="Search users by name, email, or role..."

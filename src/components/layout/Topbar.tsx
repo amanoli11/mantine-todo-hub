@@ -9,7 +9,9 @@ import {
   Badge,
   Indicator,
   Divider,
-} from '@mantine/core';
+  Typography,
+  Title,
+} from "@mantine/core";
 import {
   IconSearch,
   IconBell,
@@ -18,7 +20,7 @@ import {
   IconUser,
   IconMoon,
   IconHelp,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
 
 export function Topbar() {
   return (
@@ -26,43 +28,29 @@ export function Topbar() {
       py="sm"
       px="lg"
       style={{
-        background: 'white',
-        borderBottom: '1px solid hsl(220 13% 91%)',
-        position: 'sticky',
+        position: "sticky",
         top: 0,
         zIndex: 50,
       }}
     >
       <Group justify="space-between">
-        {/* Left Section - Search */}
-        <Box style={{ flex: 1, maxWidth: 400 }}>
+        {/* <Box style={{ flex: 1, maxWidth: 400 }}>
           <TextInput
             placeholder="Search transactions, users..."
             leftSection={<IconSearch size={18} />}
             radius="md"
-            styles={{
-              input: {
-                border: '1px solid hsl(220 13% 91%)',
-                backgroundColor: 'hsl(220 14% 96%)',
-                '&:focus': {
-                  borderColor: 'var(--mantine-color-blue-5)',
-                  backgroundColor: 'white',
-                },
-              },
-            }}
           />
-        </Box>
+        </Box> */}
+        <Title order={2}>Microcode Microfinance</Title>
 
-        {/* Right Section */}
         <Group gap="md">
-          {/* Quick Stats */}
-          <Box
+          {/* <Box
             px="md"
-            py="xs"
             style={{
-              background: 'linear-gradient(135deg, hsl(142 70% 45% / 0.1) 0%, hsl(142 70% 45% / 0.05) 100%)',
-              borderRadius: '0.5rem',
-              border: '1px solid hsl(142 70% 45% / 0.2)',
+              background:
+                "linear-gradient(135deg, hsl(142 70% 45% / 0.1) 0%, hsl(142 70% 45% / 0.05) 100%)",
+              borderRadius: "0.5rem",
+              border: "1px solid hsl(142 70% 45% / 0.2)",
             }}
           >
             <Text size="xs" c="dimmed" fw={500}>
@@ -71,7 +59,7 @@ export function Topbar() {
             <Text size="sm" fw={700} c="green.7">
               $1,234,567.89
             </Text>
-          </Box>
+          </Box> */}
 
           {/* Notifications */}
           <Menu shadow="lg" width={300} position="bottom-end" radius="md">
@@ -90,8 +78,8 @@ export function Topbar() {
                     style={{
                       width: 8,
                       height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--mantine-color-blue-6)',
+                      borderRadius: "50%",
+                      backgroundColor: "var(--mantine-color-blue-6)",
                     }}
                   />
                 }
@@ -109,8 +97,8 @@ export function Topbar() {
                     style={{
                       width: 8,
                       height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--mantine-color-green-6)',
+                      borderRadius: "50%",
+                      backgroundColor: "var(--mantine-color-green-6)",
                     }}
                   />
                 }
@@ -140,12 +128,12 @@ export function Topbar() {
               <Group
                 gap="xs"
                 style={{
-                  cursor: 'pointer',
-                  padding: '0.25rem 0.5rem 0.25rem 0.25rem',
-                  borderRadius: '0.5rem',
-                  transition: 'background 0.2s',
-                  '&:hover': {
-                    background: 'hsl(220 14% 96%)',
+                  cursor: "pointer",
+                  padding: "0.25rem 0.5rem 0.25rem 0.25rem",
+                  borderRadius: "0.5rem",
+                  transition: "background 0.2s",
+                  "&:hover": {
+                    background: "hsl(220 14% 96%)",
                   },
                 }}
               >
@@ -154,7 +142,7 @@ export function Topbar() {
                   size={36}
                   radius="md"
                 />
-                <Box style={{ display: 'none' }} visibleFrom="sm">
+                <Box style={{ display: "none" }} visibleFrom="sm">
                   <Text size="sm" fw={500} style={{ lineHeight: 1.2 }}>
                     Alex Johnson
                   </Text>
@@ -166,9 +154,15 @@ export function Topbar() {
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Label>Account</Menu.Label>
-              <Menu.Item leftSection={<IconUser size={16} />}>Profile</Menu.Item>
-              <Menu.Item leftSection={<IconSettings size={16} />}>Settings</Menu.Item>
-              <Menu.Item leftSection={<IconMoon size={16} />}>Dark Mode</Menu.Item>
+              <Menu.Item leftSection={<IconUser size={16} />}>
+                Profile
+              </Menu.Item>
+              <Menu.Item leftSection={<IconSettings size={16} />}>
+                Settings
+              </Menu.Item>
+              <Menu.Item leftSection={<IconMoon size={16} />}>
+                Dark Mode
+              </Menu.Item>
               <Divider my="xs" />
               <Menu.Item leftSection={<IconLogout size={16} />} color="red">
                 Logout
